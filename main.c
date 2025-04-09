@@ -225,19 +225,15 @@ void filter_list(List* list, int threshold)
     Node* current = list->head;
 
     //first element
-    if(current->value < threshold)
+    while(current->value < threshold && current != NULL)
     {
-        list->head = current->next;
-        if(list->head == NULL)return;
+        current = current->next;
+        list->head = current;
     }
 
     while(current->next != NULL)
     {   
-        if(current->next->value < threshold)
-        {
-            
-        }
-        current = current->next;  //advance
+
     }
 
     print_list(list);
