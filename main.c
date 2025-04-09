@@ -67,24 +67,106 @@ typedef struct
     int addValue;
     bool foundName;
     char filename[MAXFILENAME];
+    bool isMin;
+    bool isMax;
 }Options;
 
 
 // Fonctions de base
 void append(List* list, int value)
 {
+    Node* new = malloc(sizeof(Node));
+
+    if(new == NULL)return;
+    new->next = 0;
+    new->value = value;
+
+    if(list->head == NULL && list->tail == NULL)//empty list
+    {
+        list->head = new;
+        list->tail = new; 
+        return;
+    }
+
+    list->tail->next = new;
+    list->tail = new;
+    return;
 }
 
 void free_list(List* list)
 {
+
+}
+
+int count_list(List* list)
+{
+    if(list->head == NULL)return(-1);
+    Node* current = list->head;
+
+    int size = 0;
+    while(current != NULL)
+    {
+        size++;
+        current = current->next;
+    }
+    return(size);
 }
 
 void print_list(const List* list)
 {
+    if(list->head == NULL)return;
+    Node* current = list->head;
+    bool first = true;
+    printf("Liste : ");
+    while(current != NULL)
+    {   
+        if(first)
+        {   
+            first = false;
+            printf("%d", current->value);
+        } 
+        else
+        {
+            printf(" -> %d", current->value);
+        }
+        current = current->next;
+    }
+    printf("\n");
 }
 
 void reverse_list(List* list)
 {
+    if(list->head == NULL)return;
+
+    int size = count_list(list);
+    if(size == -1)return;
+
+    int* array = malloc(sizeof(int)*size);
+    if(array == NULL)return;
+
+    Node* current = list->head;
+    int i = 0;
+    while(current != NULL)  //fill array
+    {
+        array[i++] = current->value;
+        current = current->next;
+    }
+
+    bool first = true;
+    printf("Liste : ");
+    for(int i = 0; i<size; i++)
+    {
+        if(first)
+        {
+            first = false;
+            printf("%d",array[size-1-i]);
+        }
+        else
+        {
+            printf(" -> %d", array[size-1-i]);
+        } 
+    }
+    printf("\n");
 }
 
 int sum_list(const List* list)
@@ -105,6 +187,8 @@ int max_list(const List* list)
 void filter_list(List* list, int threshold)
 {
 }
+
+
 
 void help()
 {
@@ -174,6 +258,16 @@ bool parseArgs(int argc, char* argv[], Options* opt)
             if(scanf(argv[i], "--filter%d", opt->addValue) != 1)return(false);
             continue;
         }
+        else if(strcmp(argv[i], "--min")== 0)
+        {
+            opt->isMin = true;
+            continue;
+        }
+        else if(strcmp(argv[i], "--max")== 0)
+        {
+            opt->isMax = true;
+            continue;
+        }
         else if(strcmp(argv[i], "--help")== 0)
         {
             help();
@@ -212,8 +306,21 @@ int main(int argc, char* argv[])
     if(fp == NULL)return(NOFILE);
     fclose(fp);
 
-
-
+    List mylist= {.head = NULL, .tail = NULL};
     
+    read_file(options.filename, &mylist);
+    //print_list(&mylist);
+    if(options.isReverse)reverse_list(&mylist);
+    if(options.isSum)sum_list(&mylist);
+    if(options.isFilter)filter_list(&mylist, options.filterValue);
+
+    if(!options.isReverse && !options.isFilter && !options.isSum)
+    {
+        print_list(&mylist);
+    }
+
+    if(options.isMin)min_list(&mylist);
+    if(options.isMax)max_list(&mylist);
+
     return 0;
 }
