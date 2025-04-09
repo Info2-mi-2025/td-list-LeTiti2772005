@@ -114,10 +114,10 @@ int count_list(List* list)
 
 void print_list(const List* list)
 {
+    printf("Liste : ");
     if(list->head == NULL)return;
     Node* current = list->head;
     bool first = true;
-    printf("Liste : ");
     while(current != NULL)
     {   
         if(first)
@@ -136,6 +136,7 @@ void print_list(const List* list)
 
 void reverse_list(List* list)
 {
+    printf("Liste : ");
     if(list->head == NULL)return;
 
     int size = count_list(list);
@@ -151,9 +152,8 @@ void reverse_list(List* list)
         array[i++] = current->value;
         current = current->next;
     }
-
     bool first = true;
-    printf("Liste : ");
+
     for(int i = 0; i<size; i++)
     {
         if(first)
@@ -171,21 +171,76 @@ void reverse_list(List* list)
 
 int sum_list(const List* list)
 {
-    return 0;
+    if(list->head == NULL)
+    {
+        printf("Somme : %d\n", 0);
+        return(0);
+    }
+    int sum = 0;
+    Node* current = list->head;
+    while(current != NULL)
+    {
+        sum+= current->value;
+        current = current->next;
+    }
+    printf("Somme : %d\n", sum);
+    return sum;
 }
 
 int min_list(const List* list)
 {
-    return 0;
+    if(list->head == NULL)return 0;
+    int min = 0;
+    bool first = true;
+    Node* current = list->head;
+    while(current != NULL)
+    {
+        if(first)min = current->value;
+        min = current->value < min ? current->value : min;
+        current = current->next;
+    }
+    printf("Minim. : %d\n", min);
+    return min;
 }
 
 int max_list(const List* list)
 {
-    return 0;
+    if(list->head == NULL)return 0;
+    int max = 0;
+    bool first = true;
+    Node* current = list->head;
+    while(current != NULL)
+    {
+        if(first)max = current->value;
+        max = current->value > max ? current->value : max;
+        current = current->next;
+    }
+    printf("Maxim. : %d\n", max);
+    return max;
 }
 
 void filter_list(List* list, int threshold)
 {
+    if(list->head == NULL)return;
+    Node* current = list->head;
+
+    //first element
+    if(current->value < threshold)
+    {
+        list->head = current->next;
+        if(list->head == NULL)return;
+    }
+
+    while(current->next != NULL)
+    {   
+        if(current->next->value < threshold)
+        {
+            
+        }
+        current = current->next;  //advance
+    }
+
+    print_list(list);
 }
 
 
@@ -246,18 +301,6 @@ bool parseArgs(int argc, char* argv[], Options* opt)
             opt->isSum = true;
             continue;
         }
-        else if(strcmp(argv[i], "--filter")== 0)
-        {
-            opt->isFilter = true;
-            if(scanf(argv[i], "--filter%d", opt->filterValue) != 1)return(false);
-            continue;
-        }
-        else if(strcmp(argv[i], "--add")== 0)
-        {
-            opt->isAdd = true;
-            if(scanf(argv[i], "--filter%d", opt->addValue) != 1)return(false);
-            continue;
-        }
         else if(strcmp(argv[i], "--min")== 0)
         {
             opt->isMin = true;
@@ -277,6 +320,29 @@ bool parseArgs(int argc, char* argv[], Options* opt)
         {
             version();
             exit(0);   
+        }
+        else if(strcmp(argv[i], "--filter")== 0)
+        {
+            return(false);
+        }
+        else if(strcmp(argv[i], "--add")== 0)
+        {
+            return(false);
+        }
+
+        const int filterRet = sscanf(argv[i], "--filter%d", &opt->filterValue);
+        if(filterRet >= 1)
+        {
+            opt->isFilter = true;
+            continue;
+        }
+
+
+        const int filterAdd = sscanf(argv[i], "--add%d", &opt->addValue);
+        if(filterAdd >= 1)
+        {
+            opt->isAdd = true;
+            continue;
         }
 
         //not an option -> filename
@@ -302,6 +368,8 @@ int main(int argc, char* argv[])
     const bool argRet = parseArgs(argc, argv, &options);
     if(!argRet)return(ARGERROR);
 
+    //printf("FIlename: %s\n", options.filename);
+
     FILE* fp = fopen(options.filename, "r");
     if(fp == NULL)return(NOFILE);
     fclose(fp);
@@ -313,14 +381,13 @@ int main(int argc, char* argv[])
     if(options.isReverse)reverse_list(&mylist);
     if(options.isSum)sum_list(&mylist);
     if(options.isFilter)filter_list(&mylist, options.filterValue);
+    if(options.isMin)min_list(&mylist);
+    if(options.isMax)max_list(&mylist);
 
-    if(!options.isReverse && !options.isFilter && !options.isSum)
+    if(!options.isReverse && !options.isFilter && !options.isSum && !options.isMin && !options.isMax)
     {
         print_list(&mylist);
     }
-
-    if(options.isMin)min_list(&mylist);
-    if(options.isMax)max_list(&mylist);
 
     return 0;
 }

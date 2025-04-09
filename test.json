@@ -64,13 +64,13 @@
           },
           {
             "name": "--filter 10",
-            "args": ["data.txt", "--filter", "10"],
+            "args": ["data.txt", "--filter10"],
             "stdout": [{ "regex": "Liste\\s*:\\s*12 -> 19" }],
             "exit": 0
           },
           {
             "name": "--add 33",
-            "args": ["data.txt", "--add", "33"],
+            "args": ["data.txt", "--add33"],
             "stdout": [{ "regex": "Valeur\\s+33\\s+ajoutée" }],
             "exit": 0
           },
@@ -102,7 +102,7 @@
           },
           {
             "name": "Filter + Min + Max",
-            "args": ["data.txt", "--filter", "10", "--min", "--max"],
+            "args": ["data.txt", "--filter10", "--min", "--max"],
             "stdout": [
               { "regex": "Liste\\s*:\\s*12 -> 19" },
               { "regex": "Minim.*?12" },
