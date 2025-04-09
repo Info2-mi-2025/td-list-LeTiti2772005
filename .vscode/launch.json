@@ -5,7 +5,7 @@
         "type": "cppdbg",
         "request": "launch",
         "program": "${workspaceFolder}/app",
-        "args": [""],
+        "args": ["--help"],
         "stopAtEntry": false,
         "cwd": "${workspaceFolder}",
         "environment": [],
