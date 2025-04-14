@@ -170,7 +170,6 @@ void reverse_list(List* list)
     }
 
     current->next = lastMoved;
-    return;
 }
 
 int sum_list(const List* list)
@@ -225,22 +224,31 @@ int max_list(const List* list)
 
 void filter_list(List* list, int threshold)
 {
-    if(list->head == NULL)return;
-    Node* current = list->head;
+    if(list == NULL || list->head == NULL)return;
 
     //first element
-    while(current->value < threshold && current != NULL)
-    {
-        current = current->next;
-        list->head = current;
+    while(list->head->value < threshold)
+    {        
+        Node* save = list->head;
+        list->head = list->head->next;  //replace head
+        free(save);
     }
+    Node* current = list->head; //we know it's OK
 
     while(current->next != NULL)
-    {   
-
+    {
+        if(current->next->value < threshold)
+        {
+            Node* save = current->next;
+            current->next = current->next->next;  //replace next
+            free(save);
+        }
+        else    //if over threshold
+        {
+            current = current->next;
+        }
     }
 
-    print_list(list);
 }
 
 
