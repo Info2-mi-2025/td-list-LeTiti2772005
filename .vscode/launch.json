@@ -5,7 +5,7 @@
         "type": "cppdbg",
         "request": "launch",
         "program": "${workspaceFolder}/app",
-        "args": ["data.txt", "--filter12"],
+        "args": ["data.txt", "--reverse"],
         "stopAtEntry": false,
         "cwd": "${workspaceFolder}",
         "environment": [],

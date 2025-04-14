@@ -134,39 +134,43 @@ void print_list(const List* list)
     printf("\n");
 }
 
+bool insert_head(List* list, Node* new)
+{
+    if(list == NULL || new == NULL) return(false);
+
+    new->next = list->head;
+    list->head = new;
+
+    if(list->tail == NULL)   //empty list
+    {
+        list->tail = new;
+    }
+    return(true);
+}
+
 void reverse_list(List* list)
 {
-    printf("Liste : ");
-    if(list->head == NULL)return;
+    if(list == NULL || list->head == NULL)return;
 
-    int size = count_list(list);
-    if(size == -1)return;
+    //head to tail
+    Node* current = list->head; //take first
+    list->tail = current;       //put last
+    list->head = current->next; //replace head
+    current->next = NULL;
+    
+    Node* lastMoved = current;  //save last moved
+    current = list->head;   //go back to head
 
-    int* array = malloc(sizeof(int)*size);
-    if(array == NULL)return;
-
-    Node* current = list->head;
-    int i = 0;
-    while(current != NULL)  //fill array
+    while(current->next != NULL)    //if == NULL then we reached the last unmoved element
     {
-        array[i++] = current->value;
-        current = current->next;
+        list->head = current->next; //replace head
+        current->next = lastMoved;  //point to last element moved
+        lastMoved = current;        //replace lastmoved
+        current = list->head;       //go back to head
     }
-    bool first = true;
 
-    for(int i = 0; i<size; i++)
-    {
-        if(first)
-        {
-            first = false;
-            printf("%d",array[size-1-i]);
-        }
-        else
-        {
-            printf(" -> %d", array[size-1-i]);
-        } 
-    }
-    printf("\n");
+    current->next = lastMoved;
+    return;
 }
 
 int sum_list(const List* list)
@@ -380,10 +384,8 @@ int main(int argc, char* argv[])
     if(options.isMin)min_list(&mylist);
     if(options.isMax)max_list(&mylist);
 
-    if(!options.isReverse && !options.isFilter && !options.isSum && !options.isMin && !options.isMax)
-    {
-        print_list(&mylist);
-    }
+
+    print_list(&mylist);    //TODO not print for sum
 
     return 0;
 }
